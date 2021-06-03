@@ -5,7 +5,7 @@
 class Fleet{
 private:
 	std::vector<Ship> fleet;
-	const char * ships[5]{"Carrier", "Battleship", "Cruiser", "Submarine", "Destroyer"};
+	const char * ships[5]{"Patrol Boat", "Submarine", "Cruiser", "Destroyer", "Carrier"};
 	int maxSize = 5;
 public:
 	void setUpShips(){
