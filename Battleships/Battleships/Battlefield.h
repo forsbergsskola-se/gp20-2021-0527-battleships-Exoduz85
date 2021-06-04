@@ -1,10 +1,16 @@
 ﻿#pragma once
+#include <chrono>
 #include <iostream>
 #include <fcntl.h>
 #include <io.h>
 #include <tuple>
-
 #include "Cell.h"
+#include "Fleet.h"
+
+struct{
+	int dx;
+	int dy;
+} directions[] = {{-1, -1, }, {-1, 0, }, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
 
 class Battlefield{
 private:
@@ -18,36 +24,24 @@ public:
 		for (int i = 0; i < x; i++){
 				std::cout << "|" << Boarder[i][0];
 			for (auto& j : Boarder){
-				if(i == 0){
-					std::cout << "  " << j[1];
-				}
-				if(i > 0)
-				{
-					std::cout << "  *";
-				}
+				if(i == 0) std::cout << "  " << j[1];
+				if(i > 0) std::cout << "  *";
 			}
 			std::cout << "|\n";
 		}
-		_setmode(_fileno(stdout), _O_U16TEXT);
+		int set = _setmode(_fileno(stdout), _O_U16TEXT);
 		std::wstring s = L"‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾";
 		std::wcout << s << std::endl << std::flush;
-		_setmode(_fileno(stdout), _O_TEXT);
-	}
-	void examineCell(char *vertical, char *horizontal){
-		for (int i = 0; i < x; i++){
-			for(auto& j : Grid){
-				
-			}
-		}
+		set = _setmode(_fileno(stdout), _O_TEXT);
 	}
 	void setShip(Ship ship, std::string pos){
 		std::tuple<int, int> index = getIndex(pos);
 		Grid[std::get<0>(index)][std::get<1>(index)].setCell(ship);
 	}
-    void checkCell(std::string pos){
-		std::tuple<int, int> index = getIndex(pos);
-		Ship ship = Grid[std::get<0>(index)][std::get<1>(index)].getCell();
-		std::cout << "Cell occupied by: " << ship.name << std::endl;;
+    bool occupiedCell(int index1, int index2){
+		Ship ship = Grid[index1][index2].getCell();
+		if(ship.getLength() == 0) return false; // no ship 
+		return true; // yes ship
 	}
 	std::tuple<int, int> getIndex(std::string pos){
 		int index1 = 0;
@@ -59,5 +53,33 @@ public:
 			}
 		}
 		return std::tuple<int, int>{index1, index2};
+	}
+	void addFleetToGrid(Fleet fleet){ // still puts ships on positions where ships already are present!
+		int index1 = rand() % 9;
+		int index2 = rand() % 9;
+		for (int i = 0; i < 5; i++){
+			auto ship = fleet.getFleet()[i];
+			while(checkSurroundingCells(index1, index2, ship.getLength())){
+				index1 = rand() % 9;
+				index2 = rand() % 9;
+			}
+			// for future ref, vertical or horizontal position for ship?
+			// Grid[index1][index2 + i].setCell(ship); horizontal |or| Grid[index1 + i][index2].setCell(ship); vertical (rnd bool for this?)
+			for(int i = 0; i < ship.getLength(); i++){
+				Grid[index1][index2 + i].setCell(ship);
+				int z = index2 + i;
+				std::cout << ship.name << " set in position: (" << index1 << ", " << z << ")" << std::endl;
+			}
+		}
+	}
+	bool checkSurroundingCells(int index1, int index2, int shipLength){
+		for (auto& direction : directions){
+			int x = index1 + direction.dx;
+			int y = index2 + direction.dy;
+			if(shipLength + y > 9) return false;
+			if(x < 0 || y < 0) continue;
+			if(occupiedCell(x, y)) return true; // ship next to cell
+		}
+		return false; // no ship next to cell
 	}
 };

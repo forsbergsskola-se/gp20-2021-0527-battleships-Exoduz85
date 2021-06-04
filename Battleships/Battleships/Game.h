@@ -16,11 +16,7 @@ public:
 	bool running = true;
 	void start(){
 		fleet.setUpShips();
-		Ship ship = fleet.getShip(ships[1]);
-		string test = "b2";
-		battlefield.setShip(ship, test);
-		battlefield.checkCell("b2");
-		battlefield.checkCell("c3");
+		battlefield.addFleetToGrid(fleet);
 		running = true;
 		cout << endl;
 		battlefield.printBattlefield();
