@@ -8,7 +8,8 @@ protected:
 	int length = 0;
 	std::vector<Position> shipPos;
 public:
-	std::string name;
+	Ship() = default;
+	std::string name = "";
 	Ship(std::string n, int l){
 		this->name = n;
 		this->length = l;

@@ -143,8 +143,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Battlefield.h" />
-    <ClInclude Include="Battleship.h" />
+    <ClInclude Include="Cell.h" />
     <ClInclude Include="Fleet.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="Position.h" />
     <ClInclude Include="Ship.h" />
   </ItemGroup>
