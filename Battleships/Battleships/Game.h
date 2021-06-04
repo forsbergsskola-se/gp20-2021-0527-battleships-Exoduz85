@@ -5,7 +5,7 @@
 #include "Ship.h"
 
 using namespace std;
-const char * ships[5]{"Patrol Boat", "Submarine", "Cruiser", "Destroyer", "Carrier"};
+std::string ships[5] = {"Patrol Boat", "Submarine", "Cruiser", "Destroyer", "Carrier"};
 Fleet fleet;
 Battlefield battlefield;
 
@@ -19,6 +19,8 @@ public:
 		Ship ship = fleet.getShip(ships[1]);
 		string test = "b2";
 		battlefield.setShip(ship, test);
+		battlefield.checkCell("b2");
+		battlefield.checkCell("c3");
 		running = true;
 		cout << endl;
 		battlefield.printBattlefield();

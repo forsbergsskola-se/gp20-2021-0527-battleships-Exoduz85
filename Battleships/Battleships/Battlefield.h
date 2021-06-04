@@ -2,6 +2,8 @@
 #include <iostream>
 #include <fcntl.h>
 #include <io.h>
+#include <tuple>
+
 #include "Cell.h"
 
 class Battlefield{
@@ -39,6 +41,23 @@ public:
 		}
 	}
 	void setShip(Ship ship, std::string pos){
-		Grid[pos[0]][pos[1]].setCell(ship);
+		std::tuple<int, int> index = getIndex(pos);
+		Grid[std::get<0>(index)][std::get<1>(index)].setCell(ship);
+	}
+    void checkCell(std::string pos){
+		std::tuple<int, int> index = getIndex(pos);
+		Ship ship = Grid[std::get<0>(index)][std::get<1>(index)].getCell();
+		std::cout << "Cell occupied by: " << ship.name << std::endl;;
+	}
+	std::tuple<int, int> getIndex(std::string pos){
+		int index1 = 0;
+		int index2 = 0;
+		for(int i = 0; i < x; i++){
+			if(Boarder[i][0] == std::toupper(pos[0])) index1 = i;
+			for(int j = 0; j < y; j++){
+				if(Boarder[j][1] == pos[1]) index2 = j;
+			}
+		}
+		return std::tuple<int, int>{index1, index2};
 	}
 };
