@@ -53,7 +53,7 @@ public:
 	bool occupiedCell(int index1, int index2){  // ship seems to always be a default ship with length of 0 here! WHYYYYYYY?!?!?!?!??!!?
 		return Grid[index1][index2].getCell().validAsShip(); // true = is ship, false = not a ship
 	}
-	void addFleetToGrid(Fleet fleet){ // still puts ships on positions where ships already are present!
+	void addFleetToGrid(Fleet fleet){
 		int index1 = rand() % 9;
 		int index2 = rand() % 9;
 		for (int i = 0; i < 5; i++){
@@ -65,7 +65,7 @@ public:
 			// Grid[index1][index2 + i].setCell(ship); horizontal |or| Grid[index1 + i][index2].setCell(ship); vertical (rnd bool for this?)
 			for(int j = 0; j < fleet.getFleet()[i].getLength(); j++){
 				Grid[index1][index2 + j].setCell(fleet.getFleet()[i]);
-				int z = index2 + j;
+				const int z = index2 + j;
 				std::cout << fleet.getFleet()[i].name << " set in position: (" << index1 << ", " << z << ")" << std::endl;
 			}
 		}

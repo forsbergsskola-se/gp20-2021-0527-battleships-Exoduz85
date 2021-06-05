@@ -3,9 +3,9 @@
 #include "Battlefield.h"
 #include "Fleet.h"
 #include "Ship.h"
-
 using namespace std;
-std::string ships[5] = {"Patrol Boat", "Submarine", "Cruiser", "Destroyer", "Carrier"};
+
+string ships[5] = {"Patrol Boat", "Submarine", "Cruiser", "Destroyer", "Carrier"};
 Fleet fleet;
 Battlefield battlefield;
 

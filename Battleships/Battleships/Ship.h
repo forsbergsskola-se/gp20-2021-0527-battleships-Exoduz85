@@ -4,7 +4,6 @@
 #include "Position.h"
 
 class Ship{
-protected:
 	int length = 0;
 	std::vector<Position> shipPos;
 public:

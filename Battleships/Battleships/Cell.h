@@ -6,10 +6,11 @@ private:
 	Ship ship;
 public:
 	Cell() = default;
-	void setCell(Ship ship){
-		this->ship = ship;
+	void setCell(Ship s){ // works as intended..
+		ship = s;
 	}
-	Ship getCell(){ // why is this returning an empty ship??????
-		return this->ship;
+	Ship getCell(){ // WHY THE HELL IS THIS RETURNING A DEFAULT SHIP?????????? DOES NOT WORK AS INTENDED!
+		std::cout << "From cell class: " << ship.name << " length: " << ship.getLength() << std::endl;
+		return ship;
 	}
 };
