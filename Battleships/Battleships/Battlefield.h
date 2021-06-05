@@ -10,7 +10,7 @@
 struct{
 	int dx;
 	int dy;
-} directions[] = {{-1, -1, }, {-1, 0, }, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+} directions[] = {{0, 0, }, {-1, -1, }, {-1, 0, }, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
 
 class Battlefield{
 private:
@@ -70,7 +70,7 @@ public:
 			}
 		}
 	}
-	bool checkSurroundingCells(int index1, int index2, int shipLength){
+	bool checkSurroundingCells(int index1, int index2, int shipLength){ // might not check current cell?
 		for (auto& direction : directions){
 			int x = index1 + direction.dx;
 			int y = index2 + direction.dy;
