@@ -14,7 +14,7 @@ public:
 			fleet.push_back(ship);
 		}
 	}
-	std::vector<Ship> getFleet(){
+	std::vector<Ship> getFleet() const{
 		return this->fleet;
 	}
 	Ship getShip(std::string shipName){

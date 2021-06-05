@@ -38,11 +38,6 @@ public:
 		std::tuple<int, int> index = getIndex(pos);
 		Grid[std::get<0>(index)][std::get<1>(index)].setCell(ship);
 	}
-    bool occupiedCell(int index1, int index2){
-		Ship ship = Grid[index1][index2].getCell();
-		if(ship.getLength() == 0) return false; // no ship 
-		return true; // yes ship
-	}
 	std::tuple<int, int> getIndex(std::string pos){
 		int index1 = 0;
 		int index2 = 0;
@@ -54,21 +49,24 @@ public:
 		}
 		return std::tuple<int, int>{index1, index2};
 	}
+	
+	bool occupiedCell(int index1, int index2){  // ship seems to always be a default ship with length of 0 here! WHYYYYYYY?!?!?!?!??!!?
+		return Grid[index1][index2].getCell().validAsShip(); // true = is ship, false = not a ship
+	}
 	void addFleetToGrid(Fleet fleet){ // still puts ships on positions where ships already are present!
 		int index1 = rand() % 9;
 		int index2 = rand() % 9;
 		for (int i = 0; i < 5; i++){
-			auto ship = fleet.getFleet()[i];
-			while(checkSurroundingCells(index1, index2, ship.getLength())){
+			while(checkSurroundingCells(index1, index2, fleet.getFleet()[i].getLength())){
 				index1 = rand() % 9;
 				index2 = rand() % 9;
 			}
 			// for future ref, vertical or horizontal position for ship?
 			// Grid[index1][index2 + i].setCell(ship); horizontal |or| Grid[index1 + i][index2].setCell(ship); vertical (rnd bool for this?)
-			for(int i = 0; i < ship.getLength(); i++){
-				Grid[index1][index2 + i].setCell(ship);
-				int z = index2 + i;
-				std::cout << ship.name << " set in position: (" << index1 << ", " << z << ")" << std::endl;
+			for(int j = 0; j < fleet.getFleet()[i].getLength(); j++){
+				Grid[index1][index2 + j].setCell(fleet.getFleet()[i]);
+				int z = index2 + j;
+				std::cout << fleet.getFleet()[i].name << " set in position: (" << index1 << ", " << z << ")" << std::endl;
 			}
 		}
 	}
@@ -76,9 +74,12 @@ public:
 		for (auto& direction : directions){
 			int x = index1 + direction.dx;
 			int y = index2 + direction.dy;
-			if(shipLength + y > 9) return false;
 			if(x < 0 || y < 0) continue;
-			if(occupiedCell(x, y)) return true; // ship next to cell
+			if(shipLength + y > 9){
+				std::cout << "Ship was too long to fit!" << std::endl;
+				return true;
+			}
+			return occupiedCell(x, y); // true = ship, false = no ship
 		}
 		return false; // no ship next to cell
 	}

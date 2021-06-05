@@ -26,4 +26,8 @@ public:
 	std::vector<Position> getPosition() const{
 		return this->shipPos;
 	}
+	bool validAsShip(){
+		if(this->getLength() < 1) return false;
+		return true;
+	}
 };

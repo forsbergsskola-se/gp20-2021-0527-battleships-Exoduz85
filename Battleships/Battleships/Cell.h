@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 #include "Ship.h"
 
 class Cell{
@@ -10,7 +9,7 @@ public:
 	void setCell(Ship ship){
 		this->ship = ship;
 	}
-	Ship getCell(){
+	Ship getCell(){ // why is this returning an empty ship??????
 		return this->ship;
 	}
 };
