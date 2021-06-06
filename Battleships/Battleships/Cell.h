@@ -1,16 +1,20 @@
 #pragma once
 #include "Ship.h"
 
+enum class State{ Empty, Occupied, Miss, Hit };
+
 class Cell{
-private:
-	Ship ship;
 public:
+	Ship ship;
+	State state;
 	Cell() = default;
-	void setCell(Ship s){ // works as intended..
-		ship = s;
-	}
-	Ship getCell(){ // WHY THE HELL IS THIS RETURNING A DEFAULT SHIP?????????? DOES NOT WORK AS INTENDED!
-		std::cout << "From cell class: " << ship.name << " length: " << ship.getLength() << std::endl;
-		return ship;
+	State checkCell(bool attacking){
+		if(state == State::Occupied){
+			if(attacking){ state = State::Hit; }
+		}
+		if(state == State::Empty){
+			if(attacking){ state = State::Miss; }
+		}
+		return state;
 	}
 };

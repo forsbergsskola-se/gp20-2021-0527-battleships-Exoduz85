@@ -10,7 +10,7 @@
 struct{
 	int dx;
 	int dy;
-} directions[] = {{0, 0, }, {-1, -1, }, {-1, 0, }, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+} directions[] = {{0, 0, }, {-1, 0, }, {0, -1}, {0, 1},  {1, 0}};
 
 class Battlefield{
 private:
@@ -20,12 +20,16 @@ private:
 	char Boarder[x][y]{{'A', '0'}, {'B', '1'}, {'C', '2'}, {'D', '3'}, {'E', '4'}, {'F', '5'}, {'G', '6'}, {'H', '7'}, {'I', '8'}, {'J', '9'}};
 public:
 	void printBattlefield(){
-		std::cout << "_________________________________\n";
+		std::cout << "_________________________________\n| ";
+		for (auto& k : Boarder){
+			std::cout << "  " << k[1];
+		}
+		std::cout << "|\n";
 		for (int i = 0; i < x; i++){
-				std::cout << "|" << Boarder[i][0];
-			for (auto& j : Boarder){
-				if(i == 0) std::cout << "  " << j[1];
-				if(i > 0) std::cout << "  *";
+			std::cout << "|" << Boarder[i][0];
+			for(int j = 0; j < y; j++){
+				if(Grid[i][j].state == State::Occupied) std::cout << "  S";
+				else std::cout << "  *";
 			}
 			std::cout << "|\n";
 		}
@@ -34,9 +38,23 @@ public:
 		std::wcout << s << std::endl << std::flush;
 		set = _setmode(_fileno(stdout), _O_TEXT);
 	}
-	void setShip(Ship ship, std::string pos){
+	bool setShip(Ship ship, std::string pos){
 		std::tuple<int, int> index = getIndex(pos);
-		Grid[std::get<0>(index)][std::get<1>(index)].setCell(ship);
+		if(checkSurroundingCells(std::get<0>(index), std::get<1>(index), ship)){
+			return false;
+		}
+		for(int i = 0; i < ship.getLength(); i++){
+			int x = std::get<0>(index);
+			int y = std::get<1>(index);
+			if(ship.verticalSet){
+				x = x + i;
+			}else{
+				y = y + i;
+			}
+			Grid[x][y].ship = ship;
+			Grid[x][y].state = State::Occupied;
+		} 
+		return true;
 	}
 	std::tuple<int, int> getIndex(std::string pos){
 		int index1 = 0;
@@ -49,38 +67,63 @@ public:
 		}
 		return std::tuple<int, int>{index1, index2};
 	}
-	
-	bool occupiedCell(int index1, int index2){  // ship seems to always be a default ship with length of 0 here! WHYYYYYYY?!?!?!?!??!!?
-		return Grid[index1][index2].getCell().validAsShip(); // true = is ship, false = not a ship
+	bool checkSurroundingCells(int index1, int index2, Ship ship){
+		if(ship.getLength() + index1 > 10 && ship.verticalSet){
+			std::cout << "Ship was too long to fit!" << std::endl;
+			return true;
+		}
+		if(ship.getLength() + index2 > 10 && !ship.verticalSet){
+			std::cout << "Ship was too long to fit!" << std::endl;
+			return true;
+		}
+		for(int i = ship.getLength(); i > 0; i--){
+			for(auto & direction : directions){
+				int x = index1 + direction.dx; // horizontal -
+				int y = index2 + direction.dy; // vertical |
+				if(!ship.verticalSet) y = y+i;
+				else x = x+i;
+				//if(x < 0 || y < 0) continue;
+				if(x > 9 || y > 9) return true;
+				if(Grid[x][y].state == State::Occupied) return true;
+			}
+		}
+		return false; // !ship
 	}
-	void addFleetToGrid(Fleet fleet){
+	bool autoSetupFleetToGrid(Fleet fleet){
 		int index1 = rand() % 9;
 		int index2 = rand() % 9;
-		for (int i = 0; i < 5; i++){
-			while(checkSurroundingCells(index1, index2, fleet.getFleet()[i].getLength())){
+		for(int i = 0; i < 5; i++){
+			auto ship = fleet.getFleet()[i];
+			ship.verticalSet = index1 % 2 == 0 ? true : false;
+			while(checkSurroundingCells(index1, index2, ship)){
 				index1 = rand() % 9;
 				index2 = rand() % 9;
 			}
-			// for future ref, vertical or horizontal position for ship?
-			// Grid[index1][index2 + i].setCell(ship); horizontal |or| Grid[index1 + i][index2].setCell(ship); vertical (rnd bool for this?)
-			for(int j = 0; j < fleet.getFleet()[i].getLength(); j++){
-				Grid[index1][index2 + j].setCell(fleet.getFleet()[i]);
-				const int z = index2 + j;
-				std::cout << fleet.getFleet()[i].name << " set in position: (" << index1 << ", " << z << ")" << std::endl;
+			for(int j = 0; j < ship.getLength(); j++){
+				int x = index1;
+				int y = index2;
+				if(ship.verticalSet){
+					x = x + j;
+				} else{
+					y = y + j;
+				}
+				Grid[x][y].ship = ship;
+				Grid[x][y].state = State::Occupied;
 			}
 		}
+		return true;
 	}
-	bool checkSurroundingCells(int index1, int index2, int shipLength){ // might not check current cell?
-		for (auto& direction : directions){
-			int x = index1 + direction.dx;
-			int y = index2 + direction.dy;
-			if(x < 0 || y < 0) continue;
-			if(shipLength + y > 9){
-				std::cout << "Ship was too long to fit!" << std::endl;
-				return true;
+	bool attack(std::string pos){
+		std::tuple<int, int> index = getIndex(pos);
+		State state = Grid[std::get<0>(index)][std::get<1>(index)].checkCell(true);
+		if(state == State::Hit){
+			Grid[std::get<0>(index)][std::get<1>(index)].ship.setHealth();
+			if(Grid[std::get<0>(index)][std::get<1>(index)].ship.getHealth() <= 0){
+				// ship dead
+				std::cout << Grid[std::get<0>(index)][std::get<1>(index)].ship.name << " destroyed!\nExcellent work..\n";
 			}
-			return occupiedCell(x, y); // true = ship, false = no ship
+			return true;
 		}
-		return false; // no ship next to cell
+		return false;
 	}
 };

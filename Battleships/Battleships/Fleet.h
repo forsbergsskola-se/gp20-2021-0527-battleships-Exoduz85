@@ -10,19 +10,11 @@ private:
 public:
 	void setUpShips(){
 		for(int i = 0; i < maxSize; i++){
-			Ship ship = Ship(ships[i], i + 1);
+			Ship ship = Ship(ships[i], i + 1, i + 1);
 			fleet.push_back(ship);
 		}
 	}
-	std::vector<Ship> getFleet() const{
+	std::vector<Ship> getFleet(){
 		return this->fleet;
-	}
-	Ship getShip(std::string shipName){
-		for(auto ship : fleet){
-			if(ship.name == shipName){
-				return ship;
-			}
-		}
-		return Ship("notFound", 0);
 	}
 };

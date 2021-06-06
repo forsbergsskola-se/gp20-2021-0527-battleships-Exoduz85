@@ -1,17 +1,17 @@
 #pragma once
 #include <string>
-#include <vector>
-#include "Position.h"
 
 class Ship{
 	int length = 0;
-	std::vector<Position> shipPos;
+	int health = 0;
 public:
+	bool verticalSet = false;
+	std::string name;
 	Ship() = default;
-	std::string name = "";
-	Ship(std::string n, int l){
+	Ship(std::string n, int l, int h){
 		this->name = n;
 		this->length = l;
+		this->health = h;
 	}
 	void setLength(int newLength){
 		this->length = newLength;
@@ -19,14 +19,10 @@ public:
 	int getLength(){
 		return this->length;
 	}
-	void setPosition(const Position position){
-		shipPos.push_back(position);
+	void setHealth(){
+		this->health--;
 	}
-	std::vector<Position> getPosition() const{
-		return this->shipPos;
-	}
-	bool validAsShip(){
-		if(this->getLength() < 1) return false;
-		return true;
+	int getHealth(){
+		return this->health;
 	}
 };
