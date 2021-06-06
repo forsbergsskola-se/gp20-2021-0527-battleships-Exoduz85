@@ -13,26 +13,7 @@ void power(int F[2][2], int n);
 const int MAX = 1000;
 int f[MAX] = {0};
 
-void printOutRndNumb()
-{
-    int arr[20]{};
-    for(int i = 0; i < 1000; i++){
-        int r = (rand() % 20) + 1; // rand() % 20 = 0-19, (rand() % 20) + 1 = 1-20
-        arr[r - 1] += 1; // r-1 to not get out of bounds
-    }
-    for(int i = 0; i < 20; i++){
-        cout << "Number " << i+1 << " occurred: " << arr[i] << "times" << endl;
-    }
-    cout << endl;
-}
-
 int main(){
-    auto ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    srand(ms);
-    cout << "seed number: " << ms << "." << endl;
-    printOutRndNumb();
-    return 0;
-	
 	while (true){
         int number = 0;
         cout << "Enter fibonacci number:\n";
