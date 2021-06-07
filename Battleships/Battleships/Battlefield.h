@@ -82,7 +82,6 @@ public:
 				int y = index2 + direction.dy; // vertical |
 				if(!ship.verticalSet) y = y+i;
 				else x = x+i;
-				//if(x < 0 || y < 0) continue;
 				if(x > 9 || y > 9) return true;
 				if(Grid[x][y].state == State::Occupied) return true;
 			}

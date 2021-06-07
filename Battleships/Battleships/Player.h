@@ -49,5 +49,11 @@ public:
 	bool attack(Player opponent, std::string pos){
 		return opponent.battlefield.attack(pos);
 	}
+	bool hasShips(){
+		for (auto ship : fleet.getFleet()){
+			if(ship.getHealth() > 0) return true;
+		}
+		return false;
+	}
 };
 
