@@ -38,15 +38,15 @@ public:
 		std::wcout << s << std::endl << std::flush;
 		set = _setmode(_fileno(stdout), _O_TEXT);
 	}
-	bool setShip(Ship ship, std::string pos){
+	bool setShip(Ship* ship, std::string pos){
 		std::tuple<int, int> index = getIndex(pos);
-		if(checkSurroundingCells(std::get<0>(index), std::get<1>(index), ship)){
+		if(checkSurroundingCells(std::get<0>(index), std::get<1>(index), *ship)){
 			return false;
 		}
-		for(int i = 0; i < ship.getLength(); i++){
+		for(int i = 0; i < ship->getLength(); i++){
 			int x = std::get<0>(index);
 			int y = std::get<1>(index);
-			if(ship.verticalSet){
+			if(ship->verticalSet){
 				x = x + i;
 			}else{
 				y = y + i;
@@ -93,15 +93,15 @@ public:
 		int index2 = rand() % 9;
 		for(int i = 0; i < 5; i++){
 			auto ship = fleet.getFleet()[i];
-			ship.verticalSet = index1 % 2 == 0 ? true : false;
-			while(checkSurroundingCells(index1, index2, ship)){
+			ship->verticalSet = index1 % 2 == 0 ? true : false;
+			while(checkSurroundingCells(index1, index2, *ship)){
 				index1 = rand() % 9;
 				index2 = rand() % 9;
 			}
-			for(int j = 0; j < ship.getLength(); j++){
+			for(int j = 0; j < ship->getLength(); j++){
 				int x = index1;
 				int y = index2;
-				if(ship.verticalSet){
+				if(ship->verticalSet){
 					x = x + j;
 				} else{
 					y = y + j;
@@ -116,10 +116,10 @@ public:
 		std::tuple<int, int> index = getIndex(pos);
 		State state = Grid[std::get<0>(index)][std::get<1>(index)].checkCell(true);
 		if(state == State::Hit){
-			Grid[std::get<0>(index)][std::get<1>(index)].ship.setHealth();
-			if(Grid[std::get<0>(index)][std::get<1>(index)].ship.getHealth() <= 0){
+			Grid[std::get<0>(index)][std::get<1>(index)].ship->setHealth();
+			if(Grid[std::get<0>(index)][std::get<1>(index)].ship->getHealth() <= 0){
 				// ship dead
-				std::cout << Grid[std::get<0>(index)][std::get<1>(index)].ship.name << " destroyed!\nExcellent work..\n";
+				std::cout << Grid[std::get<0>(index)][std::get<1>(index)].ship->name << " destroyed!\nExcellent work..\n";
 			}
 			return true;
 		}

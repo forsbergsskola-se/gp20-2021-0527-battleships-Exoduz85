@@ -4,17 +4,17 @@
 
 class Fleet{
 private:
-	std::vector<Ship> fleet;
+	std::vector<Ship*> fleet;
 	std::string ships[5] = {"Patrol Boat", "Submarine", "Cruiser", "Destroyer", "Carrier"};
 	int maxSize = 5;
 public:
 	void setUpShips(){
 		for(int i = 0; i < maxSize; i++){
-			Ship ship = Ship(ships[i], i + 1, i + 1);
+			Ship* ship = new Ship(ships[i], i + 1, i + 1);
 			fleet.push_back(ship);
 		}
 	}
-	std::vector<Ship> getFleet(){
+	std::vector<Ship*> getFleet(){
 		return this->fleet;
 	}
 };

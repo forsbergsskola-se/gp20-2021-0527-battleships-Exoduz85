@@ -5,7 +5,7 @@ enum class State{ Empty, Occupied, Miss, Hit };
 
 class Cell{
 public:
-	Ship ship;
+	Ship* ship;
 	State state;
 	Cell() = default;
 	State checkCell(bool attacking){
@@ -18,3 +18,6 @@ public:
 		return state;
 	}
 };
+
+// each cell has it's "own" ship right now but needs to be "one" ship and not an own, 
+// create a pointer to that ship instead of an instance for each cell?

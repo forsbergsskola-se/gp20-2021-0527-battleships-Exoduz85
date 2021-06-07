@@ -20,7 +20,7 @@ public:
 		}
 		for(int i = 0 ; i < numShips; i++){
 			battlefield.printBattlefield();
-			Ship ship = fleet.getFleet()[i];
+			Ship* ship = fleet.getFleet()[i];
 			while(true){
 				std::cout << "Please select a position to set ship (e.g: b2 or g8): ";
 				std::string pos;
@@ -34,7 +34,7 @@ public:
 					std::cout << "Not a valid choice.. select 1 or 2\n";
 					std::cin >> rot;
 				}
-				ship.verticalSet = rot == 1 ? true : false;
+				ship->verticalSet = rot == 1 ? true : false;
 				bool setShip = battlefield.setShip(ship, pos);
 				if(!setShip){
 					std::cout << "Not able to set ship there, try again!" << std::endl;
@@ -50,8 +50,8 @@ public:
 		return opponent.battlefield.attack(pos);
 	}
 	bool hasShips(){
-		for (auto ship : fleet.getFleet()){
-			if(ship.getHealth() > 0) return true;
+		for (Ship* ship : fleet.getFleet()){
+			if(ship->getHealth() > 0) return true;
 		}
 		return false;
 	}
