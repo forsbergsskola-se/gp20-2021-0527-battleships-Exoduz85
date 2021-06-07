@@ -10,7 +10,9 @@ private:
 public:
 	void setUpShips(){
 		for(int i = 0; i < maxSize; i++){
-			Ship* ship = new Ship(ships[i], i + 1, i + 1);
+			int size = i + 1;
+			if(i == 0) size++;
+			Ship* ship = new Ship(ships[i], size, i + 1);
 			fleet.push_back(ship);
 		}
 	}

@@ -14,8 +14,6 @@ public:
 	bool running = true;
 	string posToAttack;
 	void start(){
-		// TODO SET UP FOR TWO PLAYERS!
-		// TODO attacking..
 		while (true)
 		{
 			switch(playerOneTurn){
@@ -34,15 +32,17 @@ public:
 							}
 							break;
 						}
-						if(playerOne.attack(playerTwo, posToAttack)){
-							cout << "Hit at position: (" << posToAttack[0] << ", " << posToAttack[1] << ")!\n";
-						} else{ cout << "Miss\n"; }
+						system("CLS");
+						if(!playerOne.attack(playerTwo, posToAttack)){
+							cout << "Try Again!\n";
+							continue;
+						}
+						cout << "Hit at position: (" << posToAttack[0] << ", " << posToAttack[1] << ")!\n";
 						if(!playerTwo.hasShips()){
 							cout << "Yippey, you've sunk all your opponents ships, PLAYER ONE WON!!! :)\n";
 							quit();
 						}
 						playerOneTurn = false;
-						//system("CLS");
 					} else{
 						playerOne.setUpPlayer();
 						playerOneTurn = false;
@@ -63,14 +63,16 @@ public:
 							}
 							break;
 						}
-						if(playerTwo.attack(playerOne, posToAttack)){
-							cout << "Hit at position: (" << posToAttack[0] << ", " << posToAttack[1] << ")!\n";
-						} else{ cout << "Miss\n"; }
+						system("CLS"); // need to redo so that the player can continue to attack
+						if(!playerTwo.attack(playerOne, posToAttack)){
+							cout << "Try Again!\n";
+							continue;
+						}
+						cout << "Hit at position: (" << posToAttack[0] << ", " << posToAttack[1] << ")!\n";
 						if(!playerOne.hasShips()){
 							cout << "Yippey, you've sunk all your opponents ships, PLAYER TWO WON!!! :)\n";
 							quit();
 						}
-						//system("CLS");
 						playerOneTurn = true;
 					} else{
 						playerTwo.setUpPlayer();

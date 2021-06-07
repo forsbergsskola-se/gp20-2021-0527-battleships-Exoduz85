@@ -1,23 +1,23 @@
 #pragma once
 #include "Ship.h"
 
-enum class State{ Empty, Occupied, Miss, Hit };
+enum class State{ Empty, Occupied, Miss, Hit, Attacked };
 
 class Cell{
 public:
 	Ship* ship;
 	State state;
 	Cell() = default;
-	State checkCell(bool attacking){
+	State checkCell(){
+		if(state == State::Hit || state == State::Miss){
+			state = State::Attacked;
+		}
 		if(state == State::Occupied){
-			if(attacking){ state = State::Hit; }
+			state = State::Hit;
 		}
 		if(state == State::Empty){
-			if(attacking){ state = State::Miss; }
+			state = State::Miss;
 		}
 		return state;
 	}
 };
-
-// each cell has it's "own" ship right now but needs to be "one" ship and not an own, 
-// create a pointer to that ship instead of an instance for each cell?

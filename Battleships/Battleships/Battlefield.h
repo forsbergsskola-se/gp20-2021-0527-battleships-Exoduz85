@@ -107,21 +107,30 @@ public:
 					y = y + j;
 				}
 				Grid[x][y].ship = ship;
-				Grid[x][y].state = State::Occupied;
+				Grid[x][y].state = State::Occupied; // Why does this work...
 			}
 		}
 		return true;
-	}
+	}                                               // But not this?? reading State seems to not work.
 	bool attack(std::string pos){
 		std::tuple<int, int> index = getIndex(pos);
-		State state = Grid[std::get<0>(index)][std::get<1>(index)].checkCell(true);
-		if(state == State::Hit){
+		if(Grid[std::get<0>(index)][std::get<1>(index)].state == State::Miss || Grid[std::get<0>(index)][std::get<1>(index)].state == State::Hit){
+			std::cout << "You've already attacked that cell.. pick another one!\n";
+			return false; // already attacked..
+		}
+		if(Grid[std::get<0>(index)][std::get<1>(index)].state == State::Empty){
+			Grid[std::get<0>(index)][std::get<1>(index)].state = State::Miss;
+			std::cout << "Ouf, a total miss!\n";
+			return true; // attacked but missed
+		}
+		if(Grid[std::get<0>(index)][std::get<1>(index)].state == State::Occupied){
 			Grid[std::get<0>(index)][std::get<1>(index)].ship->setHealth();
+			Grid[std::get<0>(index)][std::get<1>(index)].state = State::Hit;
+			std::cout << "Hit!\n";
 			if(Grid[std::get<0>(index)][std::get<1>(index)].ship->getHealth() <= 0){
-				// ship dead
 				std::cout << Grid[std::get<0>(index)][std::get<1>(index)].ship->name << " destroyed!\nExcellent work..\n";
 			}
-			return true;
+			return true; // ship hit
 		}
 		return false;
 	}
