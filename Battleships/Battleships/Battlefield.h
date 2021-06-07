@@ -6,7 +6,7 @@
 #include <tuple>
 #include "Cell.h"
 #include "Fleet.h"
-
+using namespace std;
 struct{
 	int dx;
 	int dy;
@@ -20,60 +20,60 @@ private:
 	char Boarder[x][y]{{'A', '0'}, {'B', '1'}, {'C', '2'}, {'D', '3'}, {'E', '4'}, {'F', '5'}, {'G', '6'}, {'H', '7'}, {'I', '8'}, {'J', '9'}};
 public:
 	void printBattlefield(){ // now should instead print out hits and misses.
-		std::cout << "_________________________________\n| ";
+		cout << "_________________________________\n| ";
 		for (auto& k : Boarder){
-			std::cout << "  " << k[1];
+			cout << "  " << k[1];
 		}
-		std::cout << "|\n";
+		cout << "|\n";
 		for (int i = 0; i < x; i++){
-			std::cout << "|" << Boarder[i][0];
+			cout << "|" << Boarder[i][0];
 			for(int j = 0; j < y; j++){
-				if(Grid[i][j].state == State::Occupied) std::cout << "  S";
-				else std::cout << "  *";
+				if(Grid[i][j].state == State::Occupied) cout << "  S"; // why does this work?!
+				else cout << "  *";
 			}
-			std::cout << "|\n";
+			cout << "|\n";
 		}
 		int set = _setmode(_fileno(stdout), _O_U16TEXT);
-		std::wstring s = L"‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾";
-		std::wcout << s << std::endl << std::flush;
+		wstring s = L"‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾";
+		wcout << s << endl << flush;
 		set = _setmode(_fileno(stdout), _O_TEXT);
 	}
-	bool setShip(Ship* ship, std::string pos){
-		std::tuple<int, int> index = getIndex(pos);
-		if(checkSurroundingCells(std::get<0>(index), std::get<1>(index), *ship)){
+	bool setShip(Ship* ship, string pos){
+		tuple<int, int> index = getIndex(pos);
+		if(checkSurroundingCells(get<0>(index), get<1>(index), *ship)){
 			return false;
 		}
 		for(int i = 0; i < ship->getLength(); i++){
-			int x = std::get<0>(index);
-			int y = std::get<1>(index);
+			int x = get<0>(index);
+			int y = get<1>(index);
 			if(ship->verticalSet){
 				x = x + i;
 			}else{
 				y = y + i;
 			}
 			Grid[x][y].ship = ship;
-			Grid[x][y].state = State::Occupied;
+			Grid[x][y].state = State::Occupied; // same here, why does this work but not the other types? (Hit..Miss etc)
 		} 
 		return true;
 	}
-	std::tuple<int, int> getIndex(std::string pos){
+	tuple<int, int> getIndex(string pos){
 		int index1 = 0;
 		int index2 = 0;
 		for(int i = 0; i < x; i++){
-			if(Boarder[i][0] == std::toupper(pos[0])) index1 = i;
+			if(Boarder[i][0] == toupper(pos[0])) index1 = i;
 			for(int j = 0; j < y; j++){
 				if(Boarder[j][1] == pos[1]) index2 = j;
 			}
 		}
-		return std::tuple<int, int>{index1, index2};
+		return tuple<int, int>{index1, index2};
 	}
 	bool checkSurroundingCells(int index1, int index2, Ship ship){
 		if(ship.getLength() + index1 > 10 && ship.verticalSet){
-			std::cout << "Ship was too long to fit!" << std::endl;
+			cout << "Ship was too long to fit!" << endl;
 			return true;
 		}
 		if(ship.getLength() + index2 > 10 && !ship.verticalSet){
-			std::cout << "Ship was too long to fit!" << std::endl;
+			cout << "Ship was too long to fit!" << endl;
 			return true;
 		}
 		for(int i = ship.getLength(); i > 0; i--){
@@ -111,24 +111,24 @@ public:
 			}
 		}
 		return true;
-	}                                               // But not this?? reading State seems to not work.
-	bool attack(std::string pos){
-		std::tuple<int, int> index = getIndex(pos);
-		if(Grid[std::get<0>(index)][std::get<1>(index)].state == State::Miss || Grid[std::get<0>(index)][std::get<1>(index)].state == State::Hit){
-			std::cout << "You've already attacked that cell.. pick another one!\n";
+	}                                               // But not this?? reading State seems to not work, nor does Cell.checkCell()..
+	bool attack(string pos){
+		tuple<int, int> index = getIndex(pos);
+		if(Grid[get<0>(index)][get<1>(index)].state == State::Miss || Grid[get<0>(index)][get<1>(index)].state == State::Hit){
+			cout << "You have already attacked that cell.. pick another one!\n";
 			return false; // already attacked..
 		}
-		if(Grid[std::get<0>(index)][std::get<1>(index)].state == State::Empty){
-			Grid[std::get<0>(index)][std::get<1>(index)].state = State::Miss;
-			std::cout << "Ouf, a total miss!\n";
+		if(Grid[get<0>(index)][get<1>(index)].state == State::Empty){
+			Grid[get<0>(index)][get<1>(index)].state = State::Miss;
+			cout << "Ouf, a total miss!\n";
 			return true; // attacked but missed
 		}
-		if(Grid[std::get<0>(index)][std::get<1>(index)].state == State::Occupied){
-			Grid[std::get<0>(index)][std::get<1>(index)].ship->setHealth();
-			Grid[std::get<0>(index)][std::get<1>(index)].state = State::Hit;
-			std::cout << "Hit!\n";
-			if(Grid[std::get<0>(index)][std::get<1>(index)].ship->getHealth() <= 0){
-				std::cout << Grid[std::get<0>(index)][std::get<1>(index)].ship->name << " destroyed!\nExcellent work..\n";
+		if(Grid[get<0>(index)][get<1>(index)].state == State::Occupied){
+			Grid[get<0>(index)][get<1>(index)].ship->setHealth();
+			Grid[get<0>(index)][get<1>(index)].state = State::Hit;
+			cout << "Hit!\n";
+			if(Grid[get<0>(index)][get<1>(index)].ship->getHealth() <= 0){
+				cout << Grid[get<0>(index)][get<1>(index)].ship->name << " destroyed!\nExcellent work..\n";
 			}
 			return true; // ship hit
 		}

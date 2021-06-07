@@ -46,7 +46,7 @@ public:
 		}
 		playerInitialized = true;
 	}
-	bool attack(Player opponent, std::string pos){
+	bool attack(Player &opponent, std::string pos){
 		return opponent.battlefield.attack(pos);
 	}
 	bool hasShips(){
