@@ -19,7 +19,7 @@ public:
 				case true:
 					std::cout << "Player one turn.\n\n";
 					if(playerOne.playerInitialized){
-						std::cout << "Displaying your opponents battlefield(H = hit, *= miss, ? = Unknown)\n\n";
+						std::cout << "Displaying your opponents battlefield(X = hit, O = miss, ? = Unknown)\n\n";
 						playerTwo.battlefield.printBattlefield(false);
 						playerOne.battlefield.printBattlefield(true);
 						while(true){
@@ -51,7 +51,7 @@ public:
 				default:
 					std::cout << "Player two turn.\n\n";
 					if(playerTwo.playerInitialized){
-						std::cout << "Displaying your opponents battlefield(H = hit, *= miss, ? = Unknown)\n\n";
+						std::cout << "Displaying your opponents battlefield(X = hit, O = miss, ? = Unknown)\n\n";
 						playerOne.battlefield.printBattlefield(false);
 						playerTwo.battlefield.printBattlefield(true);
 						while(true){

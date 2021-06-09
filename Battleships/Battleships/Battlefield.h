@@ -33,8 +33,8 @@ public:
 			cout << "|" << Boarder[i][0];
 			for(int j = 0; j < y; j++){
 				// TODO clean up so that each player sees a hidden battlefield.
-				if(Grid[i][j].state == State::Hit) cout << "  H";
-				else if(Grid[i][j].state == State::Miss) cout << "  *";
+				if(Grid[i][j].state == State::Hit) cout << "  X";
+				else if(Grid[i][j].state == State::Miss) cout << "  O";
 				else cout << "  ?";
 			}
 			cout << "|\n";
