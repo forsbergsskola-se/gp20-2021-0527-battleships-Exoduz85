@@ -10,7 +10,7 @@ using namespace std;
 struct{
 	int dx;
 	int dy;
-} directions[] = {{0, 0, }, {-1, 0, }, {0, -1}, {0, 1},  {1, 0}};
+} directions[] = {{0, 0, }, {1, 0}, {0, -1}, {-1, 0, }, {0, 1}};
 
 class Battlefield{
 private:
@@ -19,20 +19,27 @@ private:
 	Cell Grid[x][y]{};
 	char Boarder[x][y]{{'A', '0'}, {'B', '1'}, {'C', '2'}, {'D', '3'}, {'E', '4'}, {'F', '5'}, {'G', '6'}, {'H', '7'}, {'I', '8'}, {'J', '9'}};
 public:
-	void printBattlefield(){ // now should instead print out hits and misses.
-		cout << "_________________________________\n| ";
+	void printBattlefield(bool tabbed){
+		if(tabbed) cout << "\t\t\t\t Your own battlefield:\n\t\t\t\t";
+		cout << "_________________________________\n";
+		if(tabbed) cout << "\t\t\t\t";
+		cout << "| ";
 		for (auto& k : Boarder){
 			cout << "  " << k[1];
 		}
 		cout << "|\n";
 		for (int i = 0; i < x; i++){
+			if(tabbed) cout << "\t\t\t\t";
 			cout << "|" << Boarder[i][0];
 			for(int j = 0; j < y; j++){
-				if(Grid[i][j].state == State::Occupied) cout << "  S"; // why does this work?!
-				else cout << "  *";
+				// TODO clean up so that each player sees a hidden battlefield.
+				if(Grid[i][j].state == State::Hit) cout << "  H";
+				else if(Grid[i][j].state == State::Miss) cout << "  *";
+				else cout << "  ?";
 			}
 			cout << "|\n";
 		}
+		if(tabbed) cout << "\t\t\t\t";
 		int set = _setmode(_fileno(stdout), _O_U16TEXT);
 		wstring s = L"‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾";
 		wcout << s << endl << flush;
@@ -52,7 +59,7 @@ public:
 				y = y + i;
 			}
 			Grid[x][y].ship = ship;
-			Grid[x][y].state = State::Occupied; // same here, why does this work but not the other types? (Hit..Miss etc)
+			Grid[x][y].state = State::Occupied;
 		} 
 		return true;
 	}
@@ -89,6 +96,7 @@ public:
 		return false; // !ship
 	}
 	bool autoSetupFleetToGrid(Fleet fleet){
+		int counter = 0;
 		int index1 = rand() % 9;
 		int index2 = rand() % 9;
 		for(int i = 0; i < 5; i++){
@@ -97,6 +105,11 @@ public:
 			while(checkSurroundingCells(index1, index2, *ship)){
 				index1 = rand() % 9;
 				index2 = rand() % 9;
+				counter++;
+				if(counter > 50){ // reset the grid somehow here..
+					memset(Grid, 0, sizeof(Grid));
+					return false;
+				}
 			}
 			for(int j = 0; j < ship->getLength(); j++){
 				int x = index1;
@@ -107,21 +120,21 @@ public:
 					y = y + j;
 				}
 				Grid[x][y].ship = ship;
-				Grid[x][y].state = State::Occupied; // Why does this work...
+				Grid[x][y].state = State::Occupied;
 			}
 		}
 		return true;
-	}                                               // But not this?? reading State seems to not work, nor does Cell.checkCell()..
+	}
 	bool attack(string pos){
 		tuple<int, int> index = getIndex(pos);
 		if(Grid[get<0>(index)][get<1>(index)].state == State::Miss || Grid[get<0>(index)][get<1>(index)].state == State::Hit){
 			cout << "You have already attacked that cell.. pick another one!\n";
-			return false; // already attacked..
+			return false;
 		}
 		if(Grid[get<0>(index)][get<1>(index)].state == State::Empty){
 			Grid[get<0>(index)][get<1>(index)].state = State::Miss;
 			cout << "Ouf, a total miss!\n";
-			return true; // attacked but missed
+			return true;
 		}
 		if(Grid[get<0>(index)][get<1>(index)].state == State::Occupied){
 			Grid[get<0>(index)][get<1>(index)].ship->setHealth();
@@ -130,7 +143,7 @@ public:
 			if(Grid[get<0>(index)][get<1>(index)].ship->getHealth() <= 0){
 				cout << Grid[get<0>(index)][get<1>(index)].ship->name << " destroyed!\nExcellent work..\n";
 			}
-			return true; // ship hit
+			return true;
 		}
 		return false;
 	}

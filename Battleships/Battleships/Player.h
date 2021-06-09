@@ -7,19 +7,22 @@ public:
 	Fleet fleet;
 	Battlefield battlefield;
 	int numShips = 5;
-	void setUpPlayer(){
+	bool setUpPlayer(){
 		fleet.setUpShips();
 		std::cout << "Do you want auto place ships?\n[y] yes, let the computer place them\t[n] no, i want to do it myself!\n";
 		std::string answer;
 		std::cin >> answer;
 		if(answer == "y"){
-			battlefield.autoSetupFleetToGrid(fleet);
+			if(!battlefield.autoSetupFleetToGrid(fleet)){
+				cout << "Auto place failed, please retry!\n";
+				return false;
+			}
 			playerInitialized = true;
-			battlefield.printBattlefield();
-			return;
+			battlefield.printBattlefield(false);
+			return true;
 		}
 		for(int i = 0 ; i < numShips; i++){
-			battlefield.printBattlefield();
+			battlefield.printBattlefield(false);
 			Ship* ship = fleet.getFleet()[i];
 			while(true){
 				std::cout << "Please select a position to set ship (e.g: b2 or g8): ";
@@ -45,6 +48,7 @@ public:
 			}
 		}
 		playerInitialized = true;
+		return true;
 	}
 	bool attack(Player &opponent, std::string pos){
 		return opponent.battlefield.attack(pos);

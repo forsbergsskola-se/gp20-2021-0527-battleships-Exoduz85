@@ -14,13 +14,14 @@ public:
 	bool running = true;
 	string posToAttack;
 	void start(){
-		while (true)
-		{
+		while (running){
 			switch(playerOneTurn){
 				case true:
-					std::cout << "Player one turn.\n";
+					std::cout << "Player one turn.\n\n";
 					if(playerOne.playerInitialized){
-						playerTwo.battlefield.printBattlefield();
+						std::cout << "Displaying your opponents battlefield(H = hit, *= miss, ? = Unknown)\n\n";
+						playerTwo.battlefield.printBattlefield(false);
+						playerOne.battlefield.printBattlefield(true);
 						while(true){
 							cout << "Select a cell to bomb: (e.g: f5)\n";
 							cin >> posToAttack;
@@ -37,21 +38,22 @@ public:
 							cout << "Try Again!\n";
 							continue;
 						}
-						cout << "Hit at position: (" << posToAttack[0] << ", " << posToAttack[1] << ")!\n";
 						if(!playerTwo.hasShips()){
 							cout << "Yippey, you've sunk all your opponents ships, PLAYER ONE WON!!! :)\n";
 							quit();
 						}
 						playerOneTurn = false;
 					} else{
-						playerOne.setUpPlayer();
+						if(!playerOne.setUpPlayer()) continue;
 						playerOneTurn = false;
 					}
 					break;
 				default:
-					std::cout << "Player two turn.\n";
+					std::cout << "Player two turn.\n\n";
 					if(playerTwo.playerInitialized){
-						playerOne.battlefield.printBattlefield();
+						std::cout << "Displaying your opponents battlefield(H = hit, *= miss, ? = Unknown)\n\n";
+						playerOne.battlefield.printBattlefield(false);
+						playerTwo.battlefield.printBattlefield(true);
 						while(true){
 							cout << "Select a cell to bomb: (e.g: f5)\n";
 							cin >> posToAttack;
@@ -68,20 +70,18 @@ public:
 							cout << "Try Again!\n";
 							continue;
 						}
-						cout << "Hit at position: (" << posToAttack[0] << ", " << posToAttack[1] << ")!\n";
 						if(!playerOne.hasShips()){
 							cout << "Yippey, you've sunk all your opponents ships, PLAYER TWO WON!!! :)\n";
 							quit();
 						}
 						playerOneTurn = true;
 					} else{
-						playerTwo.setUpPlayer();
+						if(!playerTwo.setUpPlayer()) continue;
 						playerOneTurn = true;
 					}
 					break;
 			}
 		}
-		cout << endl;
 	}
 	void quit(){
 		running = false;

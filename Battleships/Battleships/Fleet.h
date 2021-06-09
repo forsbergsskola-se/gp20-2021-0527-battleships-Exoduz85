@@ -9,10 +9,11 @@ private:
 	int maxSize = 5;
 public:
 	void setUpShips(){
+		if(!fleet.empty()) return;
 		for(int i = 0; i < maxSize; i++){
 			int size = i + 1;
 			if(i == 0) size++;
-			Ship* ship = new Ship(ships[i], size, i + 1);
+			Ship* ship = new Ship(ships[i], size, size);
 			fleet.push_back(ship);
 		}
 	}
