@@ -10,7 +10,7 @@ using namespace std;
 struct{
 	int dx;
 	int dy;
-} directions[] = {{0, 0, }, {1, 0}, {0, -1}, {-1, 0, }, {0, 1}};
+} directions[] = {{0, 0}, {1, 0}, {0, -1}, {-1, 0}, {0, 1}};
 
 class Battlefield{
 private:
